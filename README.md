@@ -71,7 +71,7 @@ After deployment we can use all its functionalities of mintTokens, burnToken, re
 
 ## Authors
 
-Manish Kumar - [manishkeshri19509@gmail.com](https://www.linkedin.com/in/manish-kmr/)
+Manish Kumar - (https://www.linkedin.com/in/manish-kmr/)
 
 
 ## License
