@@ -1,79 +1,77 @@
-# Passport Control System 
-
-This Solidity smart contract, Passport control system, is designed to manage the creation, revocation, view and renewal of passports on the Ethereum blockchain.
+# A ERC20 Token with Dress Redemption System
 
 ## Description
 
-The Passport control system Solidity smart contract is a decentralized system built on the Ethereum blockchain to manage the lifecycle of a travel passport, including creation, cancellation, view and renewal.
+ A ERC20 Token with Dress Redemption System is a smart contract based on the Ethereum blockchain, which extends the functionality of the ERC20 token with a unique garment redemption feature.
 
 ## Getting Started
 
 In this assessment, I have used remix IDE [https://remix.ethereum.org/]
 
 ### Executing program
+written the code on remix IDE [https://remix.ethereum.org/]
 
-* How to run the program
-* Step-by-step bullets
 ```
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
 
-pragma solidity >=0.7.0 <0.9.0;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "hardhat/console.sol";
+contract MyGame is ERC20, Ownable {
+    string[] public dresses = ["casual", "formal", "sport", "fantasy"];
 
-/**
- * @title Owner
- * @dev Set & change owner
- */
-contract Owner {
+    struct UserDress {
+        uint casual;
+        uint formal;
+        uint sport;
+        uint fantasy;
+    }
+    
+    mapping(address => UserDress) public userDresses;
 
-    address private owner;
+    constructor() ERC20("Degen", "DGN") Ownable(msg.sender) {}
 
-    // event for EVM logging
-    event OwnerSet(address indexed oldOwner, address indexed newOwner);
-
-    // modifier to check if caller is owner
-    modifier isOwner() {
-        // If the first argument of 'require' evaluates to 'false', execution terminates and all
-        // changes to the state and to Ether balances are reverted.
-        // This used to consume all gas in old EVM versions, but not anymore.
-        // It is often a good idea to use 'require' to check if functions are called correctly.
-        // As a second argument, you can also provide an explanation about what went wrong.
-        require(msg.sender == owner, "Caller is not owner");
-        _;
+    function mintTokens(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
     }
 
-    /**
-     * @dev Set contract deployer as owner
-     */
-    constructor() {
-        console.log("Owner contract deployed by:", msg.sender);
-        owner = msg.sender; // 'msg.sender' is sender of current call, contract deployer for a constructor
-        emit OwnerSet(address(0), owner);
+    function burnTokens(uint _amount) public {
+        _burn(msg.sender, _amount);
     }
 
-    /**
-     * @dev Change owner
-     * @param newOwner address of new owner
-     */
-    function changeOwner(address newOwner) public isOwner {
-        emit OwnerSet(owner, newOwner);
-        owner = newOwner;
+    function redeemDress(uint _index) public {
+        require(_index < dresses.length, "Invalid index");
+        
+        uint256[4] memory costs = [uint256(15), uint256(25), uint256(20), uint256(35)];
+        require(balanceOf(msg.sender) >= costs[_index], "Insufficient balance");
+        _burn(msg.sender, costs[_index]);
+        
+        if (_index == 0) userDresses[msg.sender].casual++;
+        else if (_index == 1) userDresses[msg.sender].formal++;
+        else if (_index == 2) userDresses[msg.sender].sport++;
+        else if (_index == 3) userDresses[msg.sender].fantasy++;
     }
 
-    /**
-     * @dev Return owner address 
-     * @return address of owner
-     */
-    function getOwner() external view returns (address) {
-        return owner;
+    function checkAvailableDresses() public view returns (string[] memory) {
+        return dresses;
+    }
+
+    function checkMyDresses() public view returns (UserDress memory) {
+        return userDresses[msg.sender];
+    }
+    
+    function checkBalance() public view returns (uint) {
+        return balanceOf(msg.sender);
     }
 }
 ```
+When you're ready, you can deploy the contract to a live network like Ethereum Mainnet or any testnet (e.g., Rinkeby, Goerli). 
+After deployment we can use all its functionalities of mintTokens, burnToken, redeemToken, checkAvailableDresses, checkMyDresses, checkBalance
 
 ## Authors
 
-Manish Kumar gmail - manishkeshri19509@gmail.com
+Manish Kumar - [manishkeshri19509@gmail.com](https://www.linkedin.com/in/manish-kmr/)
 
 
 ## License
