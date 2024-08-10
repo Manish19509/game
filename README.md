@@ -73,7 +73,6 @@ After deployment we can use all its functionalities of mintTokens, burnToken, re
 
 Manish Kumar - (https://www.linkedin.com/in/manish-kmr/)
 
-
 ## License
 
 This project is licensed under the MIT License
